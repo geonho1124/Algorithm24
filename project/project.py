@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 import pytesseract
 
@@ -17,6 +18,7 @@ def extractText(file_path):
 # 파일을 열어주는 함수 (CLI)
 def openFileCLI():
     file_path = input("이미지 파일 경로를 입력하세요: ")
+    os.system('cls')  # 화면 초기화
     showTextCLI(file_path)
 
 # 텍스트를 CLI에 출력해주는 함수
@@ -40,6 +42,7 @@ def saveToFile(text):
 def inputTextCLI():
     word = input("검색할 단어를 입력하세요: ")
     file_path = r'C:\Users\skyst\Desktop\al_project\textfile.txt'
+    os.system('cls')  # 화면 초기화
     findWordInFile(word, file_path)
 
 # 단어를 파일에서 찾아 인덱스를 출력하는 함수
@@ -58,6 +61,7 @@ def findWordInFile(word, file_path):
             # 사용자가 특정 인덱스를 선택하면 해당 문장을 출력
             selected_index = int(input("출력할 인덱스를 선택하세요: "))
             if selected_index in indices:
+                os.system('cls')  # 화면 초기화
                 print(f"선택된 문장 [{selected_index}] - {sentences[selected_index]}")
             else:
                 print("잘못된 인덱스 선택.")
@@ -68,11 +72,17 @@ def findWordInFile(word, file_path):
 
 # CLI에서 실행하는 부분
 def mainCLI():
-    print("이미지 텍스트 추출기")
     while True:
-        print("\n[1] 이미지 열기\n[2] 텍스트 입력\n[3] 종료")
+        print(" ㅡ" * 10)
+        print("ㅣ    이미지 텍스트 추출기    ㅣ")
+        print("ㅣ                            ㅣ")
+        print("ㅣ [1] 이미지 열기            ㅣ")
+        print("ㅣ [2] 텍스트 입력            ㅣ")
+        print("ㅣ [3] 종료                   ㅣ")
+        print(" ㅡ" * 10)
         choice = input("선택: ")
 
+        os.system('cls')  # 화면 초기화
         if choice == '1':
             openFileCLI()
         elif choice == '2':
