@@ -17,7 +17,15 @@ def extractText(file_path):
 
 # 파일을 열어주는 함수 (CLI)
 def openFileCLI():
-    file_path = input("이미지 파일 경로를 입력하세요: ")
+    # 사용자의 홈 디렉토리와 바탕화면의 경로를 결합하여 이미지 파일 탐색
+    desktop_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    image_files = [f for f in os.listdir(desktop_path) if f.endswith('.png') or f.endswith('.jpg')]
+    print("바탕화면에 있는 이미지 파일 목록:")
+    for idx, image_file in enumerate(image_files):
+        print(f"[{idx + 1}] {image_file}")
+    file_index = int(input("열고자 하는 이미지 파일의 번호를 입력하세요: "))
+    file_name = image_files[file_index - 1]
+    file_path = os.path.join(desktop_path, file_name)
     os.system('cls')  # 화면 초기화
     showTextCLI(file_path)
 
@@ -30,7 +38,8 @@ def showTextCLI(file_path):
 
 # 텍스트를 파일에 저장하는 함수
 def saveToFile(text):
-    file_path = input("저장할 파일 경로를 입력하세요: ")
+    # 스크립트가 있는 디렉토리를 기준으로 상대경로 계산
+    file_path = "textfile.txt"
     try:
         with open(file_path, "a", encoding="utf-8") as file:
             file.write(text + "\n")  # 기존 파일에 이어서 내용을 추가하고 줄 바꿈 추가
@@ -41,7 +50,8 @@ def saveToFile(text):
 # 사용자로부터 텍스트를 입력받는 함수
 def inputTextCLI():
     word = input("검색할 단어를 입력하세요: ")
-    file_path = r'C:\Users\skyst\Desktop\al_project\textfile.txt'
+    # 스크립트가 있는 디렉토리를 기준으로 상대경로 계산
+    file_path = "textfile.txt"
     os.system('cls')  # 화면 초기화
     findWordInFile(word, file_path)
 
@@ -50,20 +60,30 @@ def findWordInFile(word, file_path):
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             text = file.read()
-        # 텍스트를 줄 단위 또는 마침표(.) 단위로 나눠 리스트에 저장
-        sentences = [sentence.strip() for sentence in text.replace('\n', ' ').split('.') if sentence.strip()]
+        # 텍스트를 줄 단위로 나누어서 리스트에 저장
+        sentences = text.split('\n')
         # 입력된 단어가 포함된 문장의 인덱스를 출력
-        indices = [i for i, sentence in enumerate(sentences) if word in sentence]
+        printed_header = False  # 헤더가 출력되었는지 여부를 나타내는 변수
+        indices = []  # 단어가 포함된 문장의 인덱스를 저장할 리스트
+        index_count = 1  # 출력할 문자열 인덱스를 나타내는 변수
+        for index, sentence in enumerate(sentences):
+            if word in sentence:
+                # 처음에만 단어가 있는 위치를 알리는 헤더를 출력
+                if not printed_header:
+                    print(f"단어 '{word}'는 해당 인덱스(문장)에 위치합니다:")
+                    printed_header = True
+                # 문장과 인덱스를 출력
+                print(f"[{index_count}] - {sentence}")
+                indices.append(index)  # 단어가 있는 문장의 인덱스를 리스트에 추가
+                index_count += 1  # 출력할 문자열 인덱스 증가
+        # 사용자가 선택한 인덱스를 출력
         if indices:
-            print(f"단어 '{word}'는 다음 인덱스(문장)에 위치합니다:")
-            for index in indices:
-                print(f"[{index}] - {sentences[index]}")
-            # 사용자가 특정 인덱스를 선택하면 해당 문장을 출력
             selected_index = int(input("출력할 인덱스를 선택하세요: "))
-            if selected_index in indices:
+            if selected_index in range(1, len(indices) + 1):
                 os.system('cls')  # 화면 초기화
-                print(f"선택된 문장 [{selected_index}] - {sentences[selected_index]}")
+                print(f"선택된 문장 [{selected_index}] - {sentences[indices[selected_index - 1]]}")
             else:
+                os.system('cls')  # 화면 초기화
                 print("잘못된 인덱스 선택.")
         else:
             print(f"단어 '{word}'를 찾을 수 없습니다.")
