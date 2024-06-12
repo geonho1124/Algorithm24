@@ -45,29 +45,33 @@ def inputTextCLI():
     os.system('cls')  # 화면 초기화
     findWordInFile(word, file_path)
 
-# 보이어-무어 알고리즘을 사용하여 문자열 탐색
-def boyer_moore(text, pattern):
-    n = len(text)
-    m = len(pattern)
+# 호스풀 알고리즘을 사용하여 문자열 탐색
+def horspool(text, pattern):
+    n = len(text)  # 텍스트의 길이
+    m = len(pattern)  # 패턴의 길이
     
     if m == 0:
         return -1
     
+    # 패턴의 각 문자에 대해 이동 거리를 계산(시프트 테이블 생성)
     skip = {}
     for i in range(m - 1):
         skip[pattern[i]] = m - i - 1
     
-    i = m - 1
+    i = m - 1  # 패턴의 끝에서부터 탐색 시작
     while i < n:
-        j = m - 1
-        k = i
+        j = m - 1  # 패턴의 끝 인덱스
+        k = i      # 텍스트에서 현재 검사 중인 위치
+        # 패턴과 텍스트를 끝에서부터 비교
         while j >= 0 and text[k] == pattern[j]:
             j -= 1
             k -= 1
         if j == -1:
-            return k + 1
+            return k + 1  # 패턴이 텍스트 내에서 발견된 경우 시작 인덱스 반환
+        # 테이블을 이용해 이동 거리만큼 이동
         if text[i] in skip:
             i += skip[text[i]]
+        # 문자가 테이블에 존재하지 않을 경우
         else:
             i += m
 
@@ -82,8 +86,8 @@ def findWordInFile(word, file_path):
         indices = []
         index_count = 1
         
-        # 보이어-무어 알고리즘을 사용하여 문자열 탐색
-        idx = boyer_moore(text, word)
+        # 호스풀 알고리즘을 사용하여 문자열 탐색
+        idx = horspool(text, word)
         
         # 탐색 결과 출력
         if idx != -1:
